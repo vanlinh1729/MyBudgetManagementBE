@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Context\" />
       <Folder Include="Repositories\" />
       <Folder Include="UnitOfWork\" />
     </ItemGroup>
@@ -15,6 +14,12 @@
     <ItemGroup>
       <ProjectReference Include="..\MyBudgetManagement.Application\MyBudgetManagement.Application.csproj" />
       <ProjectReference Include="..\MyBudgetManagement.Domain\MyBudgetManagement.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.1" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-preview.4.25258.110" />
     </ItemGroup>
 
 </Project>

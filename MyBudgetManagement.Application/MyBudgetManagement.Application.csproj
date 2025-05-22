@@ -21,4 +21,11 @@
       <ProjectReference Include="..\MyBudgetManagement.Domain\MyBudgetManagement.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="AutoMapper" Version="14.0.0" />
+      <PackageReference Include="BCrypt" Version="1.0.0" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.4.25258.110" />
+    </ItemGroup>
+
 </Project>

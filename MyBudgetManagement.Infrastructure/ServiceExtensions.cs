@@ -1,6 +1,11 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace MyBudgetManagement.Infrastructure;
 
-public class ServiceExtensions
+public static class ServiceExtensions
 {
-    
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services)
+    {
+        return services;
+    }   
 }

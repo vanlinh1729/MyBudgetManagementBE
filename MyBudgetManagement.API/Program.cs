@@ -1,44 +1,112 @@
-var builder = WebApplication.CreateBuilder(args);
+using System.Text;
+using System.Text.Json.Serialization;
+using Microsoft.OpenApi.Models;
+using MyBudgetManagement.Application;
+using MyBudgetManagement.Infrastructure;
+using MyBudgetManagement.Persistence;
+using Serilog;
+using Serilog.Events;
+using Serilog.Formatting.Json;
+using Serilog.Sinks.File;
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Sink(new FileSink("Logs/logs.txt", new JsonFormatter(), long.MaxValue, Encoding.Default))
+    .CreateLogger();
+try
+{
+    var builder = WebApplication.CreateBuilder(args);
 
-var app = builder.Build();
+// Register services in the container
+    builder.Services.AddControllers()
+        .AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        });
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen(options =>
+    {
+        options.SwaggerDoc("v1", new OpenApiInfo
+        {
+            Title = "MyBudgetManagement API",
+            Version = "v1",
+            Description = "API for managing budgets"
+        });
+
+        // Swagger Authorization configuration
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] { }
+            }
+        });
+    });
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+    builder.Services.AddApplication();
+    builder.Services.AddInfrastructure();
+    builder.Services.AddPersistence(builder.Configuration);
+    builder.Services.AddHttpContextAccessor();
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAllOrigins",
+            builder =>
+            {
+                builder.WithOrigins("http://localhost:4200") // Cho phép origin này
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+    });
+    builder.Host.UseSerilog();
+    var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
+    // Configure the HTTP request pipeline
+    if (app.Environment.IsDevelopment())
     {
-        var forecast = Enumerable.Range(1, 5).Select(index =>
-                new WeatherForecast
-                (
-                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                    Random.Shared.Next(-20, 55),
-                    summaries[Random.Shared.Next(summaries.Length)]
-                ))
-            .ToArray();
-        return forecast;
-    })
-    .WithName("GetWeatherForecast")
-    .WithOpenApi();
+        app.UseSwagger();
+        app.UseSwaggerUI();
+    }
 
-app.Run();
-
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+    app.UseCors("AllowAllOrigins"); // Áp dụng CORS policy
+    app.UseAuthentication();
+    app.UseAuthorization();
+    app.UseHttpsRedirection();
+    app.MapControllers();
+    
+    // Seed data asynchronously
+    await app.RunAsync();
+    return 1;
+}
+catch (Exception ex)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    if (ex is HostAbortedException) throw;
+
+    Log.Fatal(ex, "Host terminated unexpectedly!");
+    return 0;
+}
+finally
+{
+    Log.CloseAndFlush();
 }
