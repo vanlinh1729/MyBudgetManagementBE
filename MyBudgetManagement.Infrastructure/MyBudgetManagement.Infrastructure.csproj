@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Auths\" />
+      <Folder Include="FileStorages\" />
+      <Folder Include="Mailing\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\MyBudgetManagement.Application\MyBudgetManagement.Application.csproj" />
+      <ProjectReference Include="..\MyBudgetManagement.Domain\MyBudgetManagement.Domain.csproj" />
+    </ItemGroup>
+
+</Project>
