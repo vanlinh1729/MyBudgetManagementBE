@@ -8,7 +8,7 @@ using MyBudgetManagement.Application.Features.Auth.Interfaces;
 using MyBudgetManagement.Domain.Entities;
 using MyBudgetManagement.Domain.Interfaces;
 
-namespace MyBudgetManagement.Infrastructure.JwtProvider;
+namespace MyBudgetManagement.Infrastructure.JwtTokenService;
 
 public class JwtTokenService : IJwtTokenService
 {
@@ -49,6 +49,16 @@ public class JwtTokenService : IJwtTokenService
         rng.GetBytes(randomBytes);
         return Convert.ToBase64String(randomBytes);
     }
+
+    public string GenerateRandomStringToken()
+    {
+        var randomBytes = new byte[64];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomBytes);
+        return Convert.ToBase64String(randomBytes);
+        
+    }
+    
 
     public ClaimsPrincipal? GetPrincipalFromExpiredToken(string token)
     {

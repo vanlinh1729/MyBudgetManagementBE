@@ -9,8 +9,6 @@ using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Interfaces;
 using MyBudgetManagement.Infrastructure.AuthService;
 using MyBudgetManagement.Infrastructure.FileStorage;
-using MyBudgetManagement.Infrastructure.JwtProvider;
-
 namespace MyBudgetManagement.Infrastructure;
 
 public static class ServiceExtensions
@@ -18,7 +16,7 @@ public static class ServiceExtensions
     public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         //add services
-         services.AddScoped<IJwtTokenService, JwtTokenService>();  
+         services.AddScoped<IJwtTokenService, JwtTokenService.JwtTokenService>();  
          services.AddScoped<IPasswordHasher, PasswordHasher.PasswordHasher>();  
         /*
         services.AddTransient<IDataSeeder, DataSeeder>();

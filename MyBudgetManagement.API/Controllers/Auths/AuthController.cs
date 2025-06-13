@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MyBudgetManagement.Application.Features.Auth.Commands.ActivateAccount;
 using MyBudgetManagement.Application.Features.Auth.Commands.RegisterUser;
 using MyBudgetManagement.Application.Features.Auth.Dtos;
 using MyBudgetManagement.Application.Features.Auth.Interfaces;
@@ -27,7 +28,14 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterUserCommand command)
     {
-        var tokens = await _mediator.Send(command);
-        return Ok(new { Tokens = tokens });
+        var userId = await _mediator.Send(command);
+        return Ok(new { UserId = userId });
     }
+    [HttpPost("activate")]
+    public async Task<IActionResult> ActivateAccount([FromQuery] string token)
+    {
+        await _mediator.Send(new ActivateAccountCommand { Token = token });
+        return Ok("Tài khoản đã được kích hoạt thành công.");
+    }
+
 }
