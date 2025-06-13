@@ -1,5 +1,6 @@
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using MyBudgetManagement.Application.Common.Interfaces;
 
 namespace MyBudgetManagement.Application;
 
@@ -13,4 +14,5 @@ public static class ServiceExtensions
         /*
         services.AddScoped<IUserService, UserService>();
     */
+
     }}

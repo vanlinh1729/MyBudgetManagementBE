@@ -1,0 +1,22 @@
+﻿<Properties StartupConfiguration="{4D832FBF-B81B-4897-863B-AC9EE7E09974}|https">
+  <MonoDevelop.Ide.ItemProperties.src.MyBudgetManagement.API PreferredExecutionTarget="/Applications/Google Chrome.app" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="MyBudgetManagementBE">
+            <Node name="src" expanded="True">
+              <Node name="MyBudgetManagement.Persistence" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>

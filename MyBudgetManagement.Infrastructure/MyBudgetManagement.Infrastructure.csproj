@@ -7,18 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Auths\" />
-      <Folder Include="FileStorages\" />
-      <Folder Include="Mailing\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\MyBudgetManagement.Application\MyBudgetManagement.Application.csproj" />
       <ProjectReference Include="..\MyBudgetManagement.Domain\MyBudgetManagement.Domain.csproj" />
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CloudinaryDotNet" Version="1.27.5" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.1" />
+      <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.0-preview.4.25258.110" />
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.0-preview.4.25258.110" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0-preview.4.25258.110" />
     </ItemGroup>
 
 </Project>
