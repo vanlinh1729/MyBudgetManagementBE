@@ -13,6 +13,8 @@ public class GroupExpenseShare : BaseEntity
     public GroupExpenseShareStatus Status { get; set; }
     public string? Note { get; set; }
     
-    public virtual Group? Group { get; set; }
-    public virtual GroupMember? GroupMember { get; set; }
+    public virtual Group Group { get; set; }
+    public virtual GroupMember GroupMember { get; set; }
+    public virtual ICollection<GroupExpenseShare> GroupExpenseShares { get; set; } = new List<GroupExpenseShare>();
+
 }

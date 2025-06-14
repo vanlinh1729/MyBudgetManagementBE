@@ -1,6 +1,8 @@
-namespace MyBudgetManagement.Domain.Interfaces;
+using MyBudgetManagement.Domain.Entities;
 
-public interface IGroupExpenseShareRepositoryAsync
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
+
+public interface IGroupExpenseShareRepositoryAsync : IGenericRepositoryAsync<GroupExpenseShare>
 {
     
 }

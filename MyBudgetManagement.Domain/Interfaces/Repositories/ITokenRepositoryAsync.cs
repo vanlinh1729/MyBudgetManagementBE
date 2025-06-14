@@ -1,8 +1,8 @@
 using MyBudgetManagement.Domain.Entities;
 
-namespace MyBudgetManagement.Domain.Interfaces;
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 
-public interface ITokenRepositoryAsync
+public interface ITokenRepositoryAsync : IGenericRepositoryAsync<Token>
 {
     Task<Token> GetByToken(string token);
     Task SaveToken(Token token);

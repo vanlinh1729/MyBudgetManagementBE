@@ -1,8 +1,9 @@
 using MyBudgetManagement.Domain.Interfaces;
+using MyBudgetManagement.Domain.Interfaces.Repositories;
 
 namespace MyBudgetManagement.Application.Interfaces;
 
-public interface IUnitOfWork : IDisposable
+public interface IUnitOfWork
 {
     IUserRepositoryAsync Users { get; }
     IUserBalanceRepositoryAsync UserBalances { get; }
@@ -20,9 +21,8 @@ public interface IUnitOfWork : IDisposable
     IGroupInvitationRepositoryAsync GroupInvitations { get; }
     INotificationRepositoryAsync Notifications { get; }
     IGroupMessageRepositoryAsync GroupMessages { get; }
-    
-    Task<int> CompleteAsync(CancellationToken cancellationToken = default);
-    Task<bool> SaveEntitiesAsync(CancellationToken cancellationToken = default);
-    
-    
+    Task BeginTransactionAsync();
+    Task CommitAsync();
+    Task RollbackAsync();
+    Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 }

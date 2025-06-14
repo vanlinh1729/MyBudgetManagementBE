@@ -1,6 +1,8 @@
-namespace MyBudgetManagement.Domain.Interfaces;
+using MyBudgetManagement.Domain.Entities;
 
-public interface IGroupInvitationRepositoryAsync
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
+
+public interface IGroupInvitationRepositoryAsync : IGenericRepositoryAsync<GroupInvitation>
 {
     
 }

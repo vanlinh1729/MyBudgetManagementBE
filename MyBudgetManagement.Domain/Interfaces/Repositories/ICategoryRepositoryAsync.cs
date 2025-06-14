@@ -1,7 +1,7 @@
 using MyBudgetManagement.Domain.Entities;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Interfaces;
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 
 public interface ICategoryRepositoryAsync : IGenericRepositoryAsync<Category>
 {

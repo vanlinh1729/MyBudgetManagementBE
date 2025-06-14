@@ -31,7 +31,7 @@ public class AuthController : ControllerBase
         var userId = await _mediator.Send(command);
         return Ok(new { UserId = userId });
     }
-    [HttpPost("activate")]
+    [HttpGet("activate")]
     public async Task<IActionResult> ActivateAccount([FromQuery] string token)
     {
         await _mediator.Send(new ActivateAccountCommand { Token = token });

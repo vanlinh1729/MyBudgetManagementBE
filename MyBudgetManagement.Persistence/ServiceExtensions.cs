@@ -2,7 +2,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyBudgetManagement.Application.Interfaces;
+using MyBudgetManagement.Domain.Interfaces;
+using MyBudgetManagement.Domain.Interfaces.Repositories;
 using MyBudgetManagement.Persistence.Context;
+using MyBudgetManagement.Persistence.Repositories;
 
 namespace MyBudgetManagement.Persistence;
 
@@ -15,12 +18,20 @@ public static class ServiceExtensions
             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
         services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
-        /*
-        services.AddScoped<IApplicationDbContext>(provider => 
-            provider.GetRequiredService<ApplicationDbContext>());
-            
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-        */
+
+        services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+        services.AddScoped(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
+        services.AddScoped<IUserRepositoryAsync, UserRepositoryAsync>();
+        services.AddScoped<IUserBalanceRepositoryAsync, UserBalanceRepositoryAsync>();  
+        services.AddScoped<ITransactionRepositoryAsync, TransactionRepositoryAsync>();  
+        services.AddScoped<ICategoryRepositoryAsync, CategoryRepositoryAsync>();  
+        services.AddScoped<IRoleRepositoryAsync, RoleRepositoryAsync>();  
+        services.AddScoped<IPermissionRepositoryAsync, PermissionRepositoryAsync>();  
+        services.AddScoped<ITokenRepositoryAsync, TokenRepositoryAsync>();  
+        services.AddScoped<IGroupRepositoryAsync, GroupRepositoryAsync>();  
+        services.AddScoped<IGroupMemberRepositoryAsync, GroupMemberRepositoryAsync>();  
+        services.AddScoped<IGroupExpenseRepositoryAsync, GroupExpenseRepositoryAsync>();  
+
         
         return services;
     }

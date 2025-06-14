@@ -1,6 +1,6 @@
 using MyBudgetManagement.Domain.Entities;
 
-namespace MyBudgetManagement.Domain.Interfaces;
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 
 public interface IGroupRepositoryAsync : IGenericRepositoryAsync<Group>
 {

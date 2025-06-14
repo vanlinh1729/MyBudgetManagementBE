@@ -11,10 +11,10 @@ public interface IGenericRepositoryAsync<T> where T : class
 
     Task AddAsync(T entity);
 
-    Task UpdateAsync(T entity);
+    void Update(T entity);
 
-    Task DeleteAsync(T entity);
-    Task<bool> ExistsAsync(Guid id);
+    void Remove(T entity);
+    Task<bool> ExistsAsync(Expression<Func<T,bool>> predicate);
 
     
     Task BulkInsertAsync(IEnumerable<T> entities);

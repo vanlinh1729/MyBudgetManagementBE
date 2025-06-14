@@ -1,6 +1,8 @@
-namespace MyBudgetManagement.Domain.Interfaces;
+using MyBudgetManagement.Domain.Entities;
 
-public interface IGroupMessageRepositoryAsync
+namespace MyBudgetManagement.Domain.Interfaces.Repositories;
+
+public interface IGroupMessageRepositoryAsync : IGenericRepositoryAsync<GroupMessage>
 {
     
 }

@@ -16,6 +16,8 @@ public class GroupMember : BaseEntity
     //nav props
     public virtual Group Group { get; set; }
     public virtual User User { get; set; }
+    public virtual ICollection<GroupExpenseShare> GroupExpenseShares { get; set; } = new List<GroupExpenseShare>();
+
     public virtual ICollection<GroupExpense> GroupExpenses { get; set; } = new List<GroupExpense>();
     public virtual GroupInvitation? Invitation { get; set; }
 
