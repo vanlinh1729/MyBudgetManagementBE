@@ -1,4 +1,5 @@
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Categories;
 using MyBudgetManagement.Domain.Enums;
 
 namespace MyBudgetManagement.Domain.Interfaces.Repositories;

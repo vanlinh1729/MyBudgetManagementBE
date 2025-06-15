@@ -5,17 +5,19 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MyBudgetManagement.Application.Features.Auth.Commands.ActivateAccount;
+using MyBudgetManagement.Application.Features.Auth.Commands.Login;
 using MyBudgetManagement.Application.Features.Auth.Commands.RegisterUser;
+using MyBudgetManagement.Application.Features.Auth.Commands.ResendActivationEmail;
 using MyBudgetManagement.Application.Features.Auth.Dtos;
 using MyBudgetManagement.Application.Features.Auth.Interfaces;
 using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Entities;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.API.Controllers;
+namespace MyBudgetManagement.API.Controllers.Auths;
 
 [ApiController]
-[Route("api/auths")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -36,6 +38,20 @@ public class AuthController : ControllerBase
     {
         await _mediator.Send(new ActivateAccountCommand { Token = token });
         return Ok("Tài khoản đã được kích hoạt thành công.");
+    }
+    
+    [HttpGet("resend-activation-email")]
+    public async Task<IActionResult> ResendActivationEmail([FromQuery] string email)
+    {
+        await _mediator.Send(new ResendActivationEmailCommand { Email = email });
+        return Ok("Đã gửi lại email kích hoạt tài khoản, vui lòng kiểm tra lại hộp thư.");
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginCommand command)
+    {
+        var authResponse = await _mediator.Send(command);
+        return Ok(authResponse);
     }
 
 }

@@ -1,7 +1,7 @@
 using MyBudgetManagement.Domain.Common;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Groups;
 
 public class GroupExpenseShare : BaseEntity
 {
@@ -14,7 +14,6 @@ public class GroupExpenseShare : BaseEntity
     public string? Note { get; set; }
     
     public virtual Group Group { get; set; }
-    public virtual GroupMember GroupMember { get; set; }
-    public virtual ICollection<GroupExpenseShare> GroupExpenseShares { get; set; } = new List<GroupExpenseShare>();
+    public virtual GroupMember Member { get; set; }
 
 }

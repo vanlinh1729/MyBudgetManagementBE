@@ -1,16 +1,18 @@
 using MyBudgetManagement.Domain.Common;
+using MyBudgetManagement.Domain.Entities.Categories;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Debts;
 
 public class DebtAndLoan : BaseEntity
 {
     public Guid DebtContactId { get; set; }
     public Guid CategoryId { get; set; }
+    public bool IsDebt { get; set; }
     public decimal Amount { get; set; }
     public decimal AmountPaid { get; set; }
     public string? Image { get; set; }
-    public DateTime Date { get; set; }
+    public DateTime StartDate { get; set; }
     public DateTime PaymentDate { get; set; }
     public PaymentStatus Status { get; set; }
     public string Note { get; set; }   

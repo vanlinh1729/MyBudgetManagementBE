@@ -1,7 +1,7 @@
 using MyBudgetManagement.Domain.Common;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Debts;
 
 public class DebtAndLoanContact : BaseEntity
 {

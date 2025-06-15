@@ -13,6 +13,8 @@ public interface IUnitOfWork
     IDebtAndLoanContactRepositoryAsync DebtAndLoanContacts { get; }
     IRoleRepositoryAsync Roles { get; }
     IPermissionRepositoryAsync Permissions { get; }
+    IRolePermissionRepositoryAsync RolePermissions { get; }
+    IUserRoleRepositoryAsync UserRoles { get; }
     ITokenRepositoryAsync Tokens { get; }
     IGroupRepositoryAsync Groups { get; }
     IGroupMemberRepositoryAsync GroupMembers { get; }

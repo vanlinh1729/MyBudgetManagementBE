@@ -73,4 +73,9 @@ public class GenericRepositoryAsync<T> : IGenericRepositoryAsync<T> where T : cl
 
         return new PagedResult<T>(items, totalItems, pageNumber, pageSize);
     }
+
+    public IQueryable<T> Query()
+    {
+        return _dbSet.AsQueryable();
+    }
 }

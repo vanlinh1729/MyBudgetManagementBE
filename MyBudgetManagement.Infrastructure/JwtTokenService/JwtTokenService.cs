@@ -28,7 +28,10 @@ public class JwtTokenService : IJwtTokenService
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
         };
 
-        authClaims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        if (roles.Any())
+        {
+            authClaims.Add(new Claim("roles", string.Join(",", roles)));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
         var token = new JwtSecurityToken(
@@ -47,7 +50,10 @@ public class JwtTokenService : IJwtTokenService
         var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
-        return Convert.ToBase64String(randomBytes);
+        return Convert.ToBase64String(randomBytes)
+            .Replace("+", "-")
+            .Replace("/", "_")
+            .TrimEnd('=');;
     }
 
     public string GenerateRandomStringToken()
@@ -55,7 +61,10 @@ public class JwtTokenService : IJwtTokenService
         var randomBytes = new byte[64];
         using var rng = RandomNumberGenerator.Create();
         rng.GetBytes(randomBytes);
-        return Convert.ToBase64String(randomBytes);
+        return Convert.ToBase64String(randomBytes)
+            .Replace("+", "-")
+            .Replace("/", "_")
+            .TrimEnd('=');;
         
     }
     

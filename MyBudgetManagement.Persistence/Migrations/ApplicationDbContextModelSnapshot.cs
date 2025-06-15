@@ -22,7 +22,7 @@ namespace MyBudgetManagement.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Category", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Categories.Category", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -57,7 +57,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.DebtAndLoan", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Debts.DebtAndLoan", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -72,23 +72,23 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("DebtAndLoanContactId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("DebtContactId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDebt")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Note")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("Status")
@@ -98,12 +98,12 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("DebtAndLoanContactId");
+                    b.HasIndex("DebtContactId");
 
                     b.ToTable("DebtAndLoans");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.DebtAndLoanContact", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Debts.DebtAndLoanContact", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,7 +145,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("DebtAndLoanContacts");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Group", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.Group", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -182,7 +182,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupExpense", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupExpense", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -222,7 +222,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("GroupExpenses");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupExpenseShare", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupExpenseShare", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -233,9 +233,6 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.Property<decimal>("AmountPaid")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid?>("GroupExpenseShareId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("GroupId")
                         .HasColumnType("uniqueidentifier");
@@ -254,8 +251,6 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupExpenseShareId");
-
                     b.HasIndex("GroupId");
 
                     b.HasIndex("GroupMemberId");
@@ -263,7 +258,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("GroupExpenseShares");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupInvitation", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupInvitation", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -301,7 +296,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("GroupInvitations");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupMember", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -339,7 +334,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("GroupMembers");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupMessage", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -378,7 +373,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("GroupMessages");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Notification", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Notifications.Notification", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -422,7 +417,28 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("Notifications");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Permission", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Permissions");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.Role", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -434,61 +450,33 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Permissions");
-                });
-
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Token", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.RolePermission", b =>
                 {
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.HasKey("RoleId", "PermissionId");
 
-                    b.Property<DateTime>("ExpireAt")
-                        .HasColumnType("datetime2");
+                    b.HasIndex("PermissionId");
 
-                    b.Property<DateTime?>("RevokedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TokenValue")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Tokens");
+                    b.ToTable("RolePermissions");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Transaction", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Transactions.Transaction", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -522,19 +510,51 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("UserBalanceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserBalanceId");
 
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.User", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.Token", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpireAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TokenValue")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tokens");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -576,9 +596,6 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid?>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -590,12 +607,10 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.UserBalance", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.UserBalance", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -627,24 +642,39 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.ToTable("UserBalances");
                 });
 
-            modelBuilder.Entity("PermissionRole", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.UserRole", b =>
                 {
-                    b.Property<Guid>("PermissionsId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("RolesId")
+                    b.Property<Guid>("RoleId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PermissionsId", "RolesId");
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
 
-                    b.HasIndex("RolesId");
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.ToTable("PermissionRole");
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Category", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Categories.Category", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
                         .WithMany("Categories")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -653,18 +683,18 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.DebtAndLoan", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Debts.DebtAndLoan", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Category", "Category")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Categories.Category", "Category")
                         .WithMany("DebtAndLoans")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.DebtAndLoanContact", "DebtAndLoanContact")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Debts.DebtAndLoanContact", "DebtAndLoanContact")
                         .WithMany("DebtAndLoans")
-                        .HasForeignKey("DebtAndLoanContactId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("DebtContactId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Category");
@@ -672,66 +702,62 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("DebtAndLoanContact");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupExpense", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupExpense", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Group", "Group")
-                        .WithMany("GroupExpenses")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.Group", "Group")
+                        .WithMany("Expenses")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupMember", "GroupMember")
-                        .WithMany("GroupExpenses")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.GroupMember", "Member")
+                        .WithMany("Expenses")
                         .HasForeignKey("GroupMemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
 
-                    b.Navigation("GroupMember");
+                    b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupExpenseShare", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupExpenseShare", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupExpenseShare", null)
-                        .WithMany("GroupExpenseShares")
-                        .HasForeignKey("GroupExpenseShareId");
-
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Group", "Group")
-                        .WithMany("GroupExpenseShares")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.Group", "Group")
+                        .WithMany()
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupMember", "GroupMember")
-                        .WithMany("GroupExpenseShares")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.GroupMember", "Member")
+                        .WithMany("ExpenseShares")
                         .HasForeignKey("GroupMemberId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
 
-                    b.Navigation("GroupMember");
+                    b.Navigation("Member");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupInvitation", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupInvitation", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Group", "Group")
-                        .WithMany("GroupInvitations")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.Group", "Group")
+                        .WithMany("Invitations")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "Invitee")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "Invitee")
                         .WithMany("ReceivedInvitations")
                         .HasForeignKey("InviteeId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "Inviter")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "Inviter")
                         .WithMany("SentInvitations")
                         .HasForeignKey("InviterId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -741,22 +767,23 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("Inviter");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupMember", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupMember", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Group", "Group")
-                        .WithMany("GroupMembers")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.Group", "Group")
+                        .WithMany("Members")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupInvitation", "Invitation")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.GroupInvitation", "Invitation")
                         .WithMany()
-                        .HasForeignKey("InvitationId");
+                        .HasForeignKey("InvitationId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
-                        .WithMany("GroupMembers")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
+                        .WithMany("GroupMemberships")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
@@ -766,23 +793,24 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupMessage", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupMessage", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Group", "Group")
-                        .WithMany()
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.Group", "Group")
+                        .WithMany("Messages")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupMember", "GroupMember")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.GroupMember", "GroupMember")
                         .WithMany()
                         .HasForeignKey("GroupMemberId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.GroupMessage", "ParentMessage")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Groups.GroupMessage", "ParentMessage")
                         .WithMany()
-                        .HasForeignKey("ParentMessageId");
+                        .HasForeignKey("ParentMessageId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Group");
 
@@ -791,17 +819,17 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("ParentMessage");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Notification", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Notifications.Notification", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "Sender")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "Sender")
                         .WithMany("SentNotifications")
                         .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
                         .WithMany("ReceivedNotifications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Sender");
@@ -809,9 +837,47 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Token", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.RolePermission", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Roles.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Roles.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Transactions.Transaction", b =>
+                {
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Categories.Category", "Category")
+                        .WithMany("Transactions")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.UserBalance", "UserBalance")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserBalanceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("UserBalance");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.Token", b =>
+                {
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
                         .WithMany("Tokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -820,103 +886,83 @@ namespace MyBudgetManagement.Persistence.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Transaction", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.UserBalance", b =>
                 {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Category", "Category")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
+                        .WithOne("UserBalance")
+                        .HasForeignKey("MyBudgetManagement.Domain.Entities.Users.UserBalance", "UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
-                        .WithMany("Transactions")
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.UserRole", b =>
+                {
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Roles.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MyBudgetManagement.Domain.Entities.Users.User", "User")
+                        .WithMany("UserRoles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Category");
+                    b.Navigation("Role");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.User", b =>
-                {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Role", null)
-                        .WithMany("Users")
-                        .HasForeignKey("RoleId");
-                });
-
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.UserBalance", b =>
-                {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.User", "User")
-                        .WithOne("UserBalance")
-                        .HasForeignKey("MyBudgetManagement.Domain.Entities.UserBalance", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("PermissionRole", b =>
-                {
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("MyBudgetManagement.Domain.Entities.Role", null)
-                        .WithMany()
-                        .HasForeignKey("RolesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Category", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Categories.Category", b =>
                 {
                     b.Navigation("DebtAndLoans");
 
                     b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.DebtAndLoanContact", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Debts.DebtAndLoanContact", b =>
                 {
                     b.Navigation("DebtAndLoans");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Group", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.Group", b =>
                 {
-                    b.Navigation("GroupExpenseShares");
+                    b.Navigation("Expenses");
 
-                    b.Navigation("GroupExpenses");
+                    b.Navigation("Invitations");
 
-                    b.Navigation("GroupInvitations");
+                    b.Navigation("Members");
 
-                    b.Navigation("GroupMembers");
+                    b.Navigation("Messages");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupExpenseShare", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Groups.GroupMember", b =>
                 {
-                    b.Navigation("GroupExpenseShares");
+                    b.Navigation("ExpenseShares");
+
+                    b.Navigation("Expenses");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.GroupMember", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.Permission", b =>
                 {
-                    b.Navigation("GroupExpenseShares");
-
-                    b.Navigation("GroupExpenses");
+                    b.Navigation("RolePermissions");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Role", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Roles.Role", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("UserRoles");
                 });
 
-            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.User", b =>
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.User", b =>
                 {
                     b.Navigation("Categories");
 
-                    b.Navigation("GroupMembers");
+                    b.Navigation("GroupMemberships");
 
                     b.Navigation("ReceivedInvitations");
 
@@ -928,9 +974,15 @@ namespace MyBudgetManagement.Persistence.Migrations
 
                     b.Navigation("Tokens");
 
-                    b.Navigation("Transactions");
+                    b.Navigation("UserBalance")
+                        .IsRequired();
 
-                    b.Navigation("UserBalance");
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("MyBudgetManagement.Domain.Entities.Users.UserBalance", b =>
+                {
+                    b.Navigation("Transactions");
                 });
 #pragma warning restore 612, 618
         }

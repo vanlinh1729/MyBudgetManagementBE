@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using MyBudgetManagement.Application.Features.Auth.Interfaces;
 using MyBudgetManagement.Application.Wrappers;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Users;
 using MyBudgetManagement.Domain.Interfaces;
 using MyBudgetManagement.Domain.Interfaces.Repositories;
 using MyBudgetManagement.Persistence.Context;
@@ -21,7 +22,7 @@ public class TokenRepositoryAsync : GenericRepositoryAsync<Token>, ITokenReposit
     }
 
     public async Task<Token> GetByToken(string token) =>
-        await _context.Tokens.FirstOrDefaultAsync(rt => rt.TokenValue == token);
+        await _dbSet.Where(x => x.TokenValue == token).FirstOrDefaultAsync();
 
     public async Task SaveToken(Token token)
     {

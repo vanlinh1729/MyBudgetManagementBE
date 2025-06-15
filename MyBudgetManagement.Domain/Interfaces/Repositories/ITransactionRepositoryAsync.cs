@@ -1,4 +1,4 @@
-using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Transactions;
 
 namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 

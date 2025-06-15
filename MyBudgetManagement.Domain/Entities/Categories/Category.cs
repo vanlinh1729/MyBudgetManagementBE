@@ -1,7 +1,10 @@
 using MyBudgetManagement.Domain.Common;
+using MyBudgetManagement.Domain.Entities.Debts;
+using MyBudgetManagement.Domain.Entities.Transactions;
+using MyBudgetManagement.Domain.Entities.Users;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Categories;
 
 public class Category : BaseEntity
 {

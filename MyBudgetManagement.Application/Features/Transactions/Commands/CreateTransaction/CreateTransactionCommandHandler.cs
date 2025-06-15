@@ -4,6 +4,7 @@ using MyBudgetManagement.Application.Common.Exceptions;
 using MyBudgetManagement.Application.Common.Interfaces;
 using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Transactions;
 using MyBudgetManagement.Domain.Enums;
 
 namespace MyBudgetManagement.Application.Features.Transactions.Commands.CreateTransaction;

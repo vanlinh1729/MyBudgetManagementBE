@@ -4,6 +4,7 @@ using Microsoft.OpenApi.Models;
 using MyBudgetManagement.Application;
 using MyBudgetManagement.Infrastructure;
 using MyBudgetManagement.Persistence;
+using MyBudgetManagement.Persistence.Seed;
 using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
@@ -81,6 +82,21 @@ try
     builder.Host.UseSerilog();
     var app = builder.Build();
 
+    //seed data
+    using (var scope = app.Services.CreateScope())
+    {
+        var seeder = scope.ServiceProvider.GetRequiredService<IDataSeeder>();
+        try
+        {
+            await seeder.SeedAsync();
+        }
+        catch (Exception ex)
+        {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogError(ex, "An error occurred while seeding the database");
+        }
+    }
+    
 // Configure the HTTP request pipeline.
     // Configure the HTTP request pipeline
     if (app.Environment.IsDevelopment())

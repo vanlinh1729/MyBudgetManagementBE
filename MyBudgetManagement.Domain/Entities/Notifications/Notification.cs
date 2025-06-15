@@ -1,7 +1,8 @@
 using MyBudgetManagement.Domain.Common;
+using MyBudgetManagement.Domain.Entities.Users;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Notifications;
 
 public class Notification : BaseEntity
 {

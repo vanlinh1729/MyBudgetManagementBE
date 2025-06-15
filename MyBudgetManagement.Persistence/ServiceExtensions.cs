@@ -6,6 +6,7 @@ using MyBudgetManagement.Domain.Interfaces;
 using MyBudgetManagement.Domain.Interfaces.Repositories;
 using MyBudgetManagement.Persistence.Context;
 using MyBudgetManagement.Persistence.Repositories;
+using MyBudgetManagement.Persistence.Seed;
 
 namespace MyBudgetManagement.Persistence;
 
@@ -20,6 +21,7 @@ public static class ServiceExtensions
 
 
         services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+        services.AddScoped<IDataSeeder, DataSeeder>();
         services.AddScoped(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
         services.AddScoped<IUserRepositoryAsync, UserRepositoryAsync>();
         services.AddScoped<IUserBalanceRepositoryAsync, UserBalanceRepositoryAsync>();  

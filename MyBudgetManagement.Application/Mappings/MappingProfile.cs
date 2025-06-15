@@ -1,6 +1,7 @@
 using AutoMapper;
 using MyBudgetManagement.Application.DTOs;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Users;
 
 namespace MyBudgetManagement.Application.Mappings;
 

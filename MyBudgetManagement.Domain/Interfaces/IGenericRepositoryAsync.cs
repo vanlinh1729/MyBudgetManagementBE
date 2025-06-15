@@ -24,4 +24,6 @@ public interface IGenericRepositoryAsync<T> where T : class
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
         int pageNumber = 1,
         int pageSize = 10);
+    IQueryable<T> Query();
+
 }

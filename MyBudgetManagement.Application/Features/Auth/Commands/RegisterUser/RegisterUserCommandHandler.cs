@@ -3,6 +3,7 @@ using MyBudgetManagement.Application.Common.Exceptions;
 using MyBudgetManagement.Application.Features.Auth.Interfaces;
 using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Users;
 using MyBudgetManagement.Domain.Enums;
 
 namespace MyBudgetManagement.Application.Features.Auth.Commands.RegisterUser;
@@ -66,7 +67,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, G
         await _uow.CommitAsync();
 
        
-        await _mailService.SendActivateEmailAsync(user.Email, user.FullName,activationToken);
+        await _mailService.SendActivateEmailAsync(user.Email, user.FullName,token.TokenValue);
 
         return userId;
         }

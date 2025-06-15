@@ -1,6 +1,7 @@
 using Microsoft.Identity.Client;
 using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Groups;
 using MyBudgetManagement.Domain.Interfaces;
 using MyBudgetManagement.Domain.Interfaces.Repositories;
 using MyBudgetManagement.Persistence.Context;

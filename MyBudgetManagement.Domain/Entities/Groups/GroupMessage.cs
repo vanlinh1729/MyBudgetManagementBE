@@ -1,6 +1,6 @@
 using MyBudgetManagement.Domain.Common;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Groups;
 
 public class GroupMessage : BaseEntity
 {
@@ -14,5 +14,5 @@ public class GroupMessage : BaseEntity
     //nav props
     public virtual Group Group { get; set; }
     public virtual GroupMember GroupMember { get; set; }
-    public virtual GroupMessage ParentMessage { get; set; }
+    public virtual GroupMessage? ParentMessage { get; set; }
 }

@@ -6,60 +6,49 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MyBudgetManagement.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class addmoreentities : Migration
+    public partial class Refactorallentitiesandrelationships : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_DebtAndLoan_Categories_CategoryId",
-                table: "DebtAndLoan");
+                name: "FK_Transactions_Users_UserId",
+                table: "Transactions");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_DebtAndLoan_DebtAndLoanContact_DebtAndLoanContactId",
-                table: "DebtAndLoan");
+            migrationBuilder.DropTable(
+                name: "DebtAndLoan");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_DebtAndLoanContact",
-                table: "DebtAndLoanContact");
+            migrationBuilder.DropTable(
+                name: "DebtAndLoanContact");
 
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_DebtAndLoan",
-                table: "DebtAndLoan");
-
-            migrationBuilder.RenameTable(
-                name: "DebtAndLoanContact",
-                newName: "DebtAndLoanContacts");
-
-            migrationBuilder.RenameTable(
-                name: "DebtAndLoan",
-                newName: "DebtAndLoans");
+            migrationBuilder.RenameColumn(
+                name: "UserId",
+                table: "Transactions",
+                newName: "UserBalanceId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_DebtAndLoan_DebtAndLoanContactId",
-                table: "DebtAndLoans",
-                newName: "IX_DebtAndLoans_DebtAndLoanContactId");
+                name: "IX_Transactions_UserId",
+                table: "Transactions",
+                newName: "IX_Transactions_UserBalanceId");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_DebtAndLoan_CategoryId",
-                table: "DebtAndLoans",
-                newName: "IX_DebtAndLoans_CategoryId");
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "RoleId",
-                table: "Users",
-                type: "uniqueidentifier",
-                nullable: true);
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_DebtAndLoanContacts",
-                table: "DebtAndLoanContacts",
-                column: "Id");
-
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_DebtAndLoans",
-                table: "DebtAndLoans",
-                column: "Id");
+            migrationBuilder.CreateTable(
+                name: "DebtAndLoanContacts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Relationship = table.Column<int>(type: "int", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankingNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DebtAndLoanContacts", x => x.Id);
+                });
 
             migrationBuilder.CreateTable(
                 name: "Groups",
@@ -102,14 +91,12 @@ namespace MyBudgetManagement.Persistence.Migrations
                         name: "FK_Notifications_Users_SenderId",
                         column: x => x.SenderId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Notifications_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -117,8 +104,8 @@ namespace MyBudgetManagement.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,11 +117,43 @@ namespace MyBudgetManagement.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "DebtAndLoans",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DebtContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IsDebt = table.Column<bool>(type: "bit", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AmountPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DebtAndLoans", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DebtAndLoans_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_DebtAndLoans_DebtAndLoanContacts_DebtContactId",
+                        column: x => x.DebtContactId,
+                        principalTable: "DebtAndLoanContacts",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -163,36 +182,64 @@ namespace MyBudgetManagement.Persistence.Migrations
                         name: "FK_GroupInvitations_Users_InviteeId",
                         column: x => x.InviteeId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GroupInvitations_Users_InviterId",
                         column: x => x.InviterId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "PermissionRole",
+                name: "RolePermissions",
                 columns: table => new
                 {
-                    PermissionsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RolesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PermissionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PermissionRole", x => new { x.PermissionsId, x.RolesId });
+                    table.PrimaryKey("PK_RolePermissions", x => new { x.RoleId, x.PermissionId });
                     table.ForeignKey(
-                        name: "FK_PermissionRole_Permissions_PermissionsId",
-                        column: x => x.PermissionsId,
+                        name: "FK_RolePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
                         principalTable: "Permissions",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PermissionRole_Roles_RolesId",
-                        column: x => x.RolesId,
+                        name: "FK_RolePermissions_Roles_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdatedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -217,19 +264,20 @@ namespace MyBudgetManagement.Persistence.Migrations
                         name: "FK_GroupMembers_GroupInvitations_InvitationId",
                         column: x => x.InvitationId,
                         principalTable: "GroupInvitations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_GroupMembers_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GroupMembers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -253,14 +301,12 @@ namespace MyBudgetManagement.Persistence.Migrations
                         name: "FK_GroupExpenses_GroupMembers_GroupMemberId",
                         column: x => x.GroupMemberId,
                         principalTable: "GroupMembers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GroupExpenses_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -274,29 +320,21 @@ namespace MyBudgetManagement.Persistence.Migrations
                     AmountPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     PaidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    GroupExpenseShareId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupExpenseShares", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_GroupExpenseShares_GroupExpenseShares_GroupExpenseShareId",
-                        column: x => x.GroupExpenseShareId,
-                        principalTable: "GroupExpenseShares",
-                        principalColumn: "Id");
-                    table.ForeignKey(
                         name: "FK_GroupExpenseShares_GroupMembers_GroupMemberId",
                         column: x => x.GroupMemberId,
                         principalTable: "GroupMembers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GroupExpenseShares_Groups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -319,8 +357,7 @@ namespace MyBudgetManagement.Persistence.Migrations
                         name: "FK_GroupMessages_GroupMembers_GroupMemberId",
                         column: x => x.GroupMemberId,
                         principalTable: "GroupMembers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GroupMessages_GroupMessages_ParentMessageId",
                         column: x => x.ParentMessageId,
@@ -335,9 +372,14 @@ namespace MyBudgetManagement.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Users_RoleId",
-                table: "Users",
-                column: "RoleId");
+                name: "IX_DebtAndLoans_CategoryId",
+                table: "DebtAndLoans",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DebtAndLoans_DebtContactId",
+                table: "DebtAndLoans",
+                column: "DebtContactId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupExpenses_GroupId",
@@ -348,11 +390,6 @@ namespace MyBudgetManagement.Persistence.Migrations
                 name: "IX_GroupExpenses_GroupMemberId",
                 table: "GroupExpenses",
                 column: "GroupMemberId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupExpenseShares_GroupExpenseShareId",
-                table: "GroupExpenseShares",
-                column: "GroupExpenseShareId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupExpenseShares_GroupId",
@@ -420,48 +457,33 @@ namespace MyBudgetManagement.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PermissionRole_RolesId",
-                table: "PermissionRole",
-                column: "RolesId");
+                name: "IX_RolePermissions_PermissionId",
+                table: "RolePermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_DebtAndLoans_Categories_CategoryId",
-                table: "DebtAndLoans",
-                column: "CategoryId",
-                principalTable: "Categories",
+                name: "FK_Transactions_UserBalances_UserBalanceId",
+                table: "Transactions",
+                column: "UserBalanceId",
+                principalTable: "UserBalances",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DebtAndLoans_DebtAndLoanContacts_DebtAndLoanContactId",
-                table: "DebtAndLoans",
-                column: "DebtAndLoanContactId",
-                principalTable: "DebtAndLoanContacts",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Users_Roles_RoleId",
-                table: "Users",
-                column: "RoleId",
-                principalTable: "Roles",
-                principalColumn: "Id");
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_DebtAndLoans_Categories_CategoryId",
-                table: "DebtAndLoans");
+                name: "FK_Transactions_UserBalances_UserBalanceId",
+                table: "Transactions");
 
-            migrationBuilder.DropForeignKey(
-                name: "FK_DebtAndLoans_DebtAndLoanContacts_DebtAndLoanContactId",
-                table: "DebtAndLoans");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Users_Roles_RoleId",
-                table: "Users");
+            migrationBuilder.DropTable(
+                name: "DebtAndLoans");
 
             migrationBuilder.DropTable(
                 name: "GroupExpenses");
@@ -476,7 +498,13 @@ namespace MyBudgetManagement.Persistence.Migrations
                 name: "Notifications");
 
             migrationBuilder.DropTable(
-                name: "PermissionRole");
+                name: "RolePermissions");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
+
+            migrationBuilder.DropTable(
+                name: "DebtAndLoanContacts");
 
             migrationBuilder.DropTable(
                 name: "GroupMembers");
@@ -493,63 +521,83 @@ namespace MyBudgetManagement.Persistence.Migrations
             migrationBuilder.DropTable(
                 name: "Groups");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Users_RoleId",
-                table: "Users");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_DebtAndLoans",
-                table: "DebtAndLoans");
-
-            migrationBuilder.DropPrimaryKey(
-                name: "PK_DebtAndLoanContacts",
-                table: "DebtAndLoanContacts");
-
-            migrationBuilder.DropColumn(
-                name: "RoleId",
-                table: "Users");
-
-            migrationBuilder.RenameTable(
-                name: "DebtAndLoans",
-                newName: "DebtAndLoan");
-
-            migrationBuilder.RenameTable(
-                name: "DebtAndLoanContacts",
-                newName: "DebtAndLoanContact");
+            migrationBuilder.RenameColumn(
+                name: "UserBalanceId",
+                table: "Transactions",
+                newName: "UserId");
 
             migrationBuilder.RenameIndex(
-                name: "IX_DebtAndLoans_DebtAndLoanContactId",
-                table: "DebtAndLoan",
-                newName: "IX_DebtAndLoan_DebtAndLoanContactId");
+                name: "IX_Transactions_UserBalanceId",
+                table: "Transactions",
+                newName: "IX_Transactions_UserId");
 
-            migrationBuilder.RenameIndex(
-                name: "IX_DebtAndLoans_CategoryId",
-                table: "DebtAndLoan",
-                newName: "IX_DebtAndLoan_CategoryId");
+            migrationBuilder.CreateTable(
+                name: "DebtAndLoanContact",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BankingNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Relationship = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DebtAndLoanContact", x => x.Id);
+                });
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_DebtAndLoan",
-                table: "DebtAndLoan",
-                column: "Id");
+            migrationBuilder.CreateTable(
+                name: "DebtAndLoan",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DebtAndLoanContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    AmountPaid = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DebtContactId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Note = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DebtAndLoan", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_DebtAndLoan_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DebtAndLoan_DebtAndLoanContact_DebtAndLoanContactId",
+                        column: x => x.DebtAndLoanContactId,
+                        principalTable: "DebtAndLoanContact",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
-            migrationBuilder.AddPrimaryKey(
-                name: "PK_DebtAndLoanContact",
-                table: "DebtAndLoanContact",
-                column: "Id");
+            migrationBuilder.CreateIndex(
+                name: "IX_DebtAndLoan_CategoryId",
+                table: "DebtAndLoan",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DebtAndLoan_DebtAndLoanContactId",
+                table: "DebtAndLoan",
+                column: "DebtAndLoanContactId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_DebtAndLoan_Categories_CategoryId",
-                table: "DebtAndLoan",
-                column: "CategoryId",
-                principalTable: "Categories",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_DebtAndLoan_DebtAndLoanContact_DebtAndLoanContactId",
-                table: "DebtAndLoan",
-                column: "DebtAndLoanContactId",
-                principalTable: "DebtAndLoanContact",
+                name: "FK_Transactions_Users_UserId",
+                table: "Transactions",
+                column: "UserId",
+                principalTable: "Users",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
         }

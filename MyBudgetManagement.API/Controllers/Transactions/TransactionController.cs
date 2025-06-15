@@ -4,11 +4,10 @@ using System;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
-using MyBudgetManagement.Application.Exceptions;
 using MyBudgetManagement.Application.Features.Transactions.Commands.CreateTransaction;
 using MyBudgetManagement.Application.Wrappers;
 
-namespace MyBudgetManagement.API.Controllers
+namespace MyBudgetManagement.API.Controllers.Transactions
 {
     [Authorize]
     [ApiController]

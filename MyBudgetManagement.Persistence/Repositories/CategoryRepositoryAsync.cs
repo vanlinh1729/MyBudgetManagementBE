@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MyBudgetManagement.Application.Interfaces;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Categories;
 using MyBudgetManagement.Domain.Enums;
 using MyBudgetManagement.Domain.Interfaces;
 using MyBudgetManagement.Domain.Interfaces.Repositories;

@@ -1,4 +1,5 @@
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Users;
 
 namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 

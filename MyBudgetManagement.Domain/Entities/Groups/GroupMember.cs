@@ -1,7 +1,8 @@
 using MyBudgetManagement.Domain.Common;
+using MyBudgetManagement.Domain.Entities.Users;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Groups;
 
 public class GroupMember : BaseEntity
 {
@@ -13,13 +14,11 @@ public class GroupMember : BaseEntity
     public DateTime JoinDate { get; set; }
     public decimal NetBalance { get; set; }
 
-    //nav props
+    // Navigation properties
     public virtual Group Group { get; set; }
     public virtual User User { get; set; }
-    public virtual ICollection<GroupExpenseShare> GroupExpenseShares { get; set; } = new List<GroupExpenseShare>();
-
-    public virtual ICollection<GroupExpense> GroupExpenses { get; set; } = new List<GroupExpense>();
     public virtual GroupInvitation? Invitation { get; set; }
-
+    public virtual ICollection<GroupExpense> Expenses { get; set; } = new List<GroupExpense>();
+    public virtual ICollection<GroupExpenseShare> ExpenseShares { get; set; } = new List<GroupExpenseShare>();
 
 }

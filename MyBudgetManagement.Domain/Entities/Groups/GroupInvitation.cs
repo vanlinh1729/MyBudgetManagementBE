@@ -1,6 +1,7 @@
 using MyBudgetManagement.Domain.Common;
+using MyBudgetManagement.Domain.Entities.Users;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Groups;
 
 public class GroupInvitation : BaseEntity   
 {

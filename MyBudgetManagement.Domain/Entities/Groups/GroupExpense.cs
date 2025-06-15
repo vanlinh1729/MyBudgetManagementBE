@@ -1,7 +1,7 @@
 using MyBudgetManagement.Domain.Common;
 using MyBudgetManagement.Domain.Enums;
 
-namespace MyBudgetManagement.Domain.Entities;
+namespace MyBudgetManagement.Domain.Entities.Groups;
 
 public class GroupExpense : BaseEntity
 {
@@ -16,5 +16,5 @@ public class GroupExpense : BaseEntity
 
     // Navigation properties
     public virtual Group Group { get; set; }
-    public virtual GroupMember GroupMember { get; set; }
+    public virtual GroupMember Member { get; set; }
 }

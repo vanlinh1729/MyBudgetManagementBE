@@ -2,7 +2,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MyBudgetManagement.Application.Exceptions;
+using MyBudgetManagement.Application.Common.Exceptions;
 using MyBudgetManagement.Application.Interfaces;
 
 namespace MyBudgetManagement.Infrastructure.FileStorage;
@@ -32,7 +32,7 @@ public class CloudinaryService : IFileStorageService
 
             if (string.IsNullOrEmpty(cloudName) || string.IsNullOrEmpty(apiKey) || string.IsNullOrEmpty(apiSecret))
             {
-                throw new ApiException("Cloudinary configuration is missing or invalid");
+                throw new ConflictException("Cloudinary configuration is missing or invalid");
             }
 
             var account = new Account(cloudName, apiKey, apiSecret);
@@ -41,7 +41,7 @@ public class CloudinaryService : IFileStorageService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error initializing Cloudinary service");
-            throw new ApiException($"Failed to initialize Cloudinary: {ex.Message}");
+            throw new ConflictException($"Failed to initialize Cloudinary: {ex.Message}");
         }
     }
 
@@ -49,12 +49,12 @@ public class CloudinaryService : IFileStorageService
     {
         if (fileStream == null)
         {
-            throw new ApiException("File stream is null");
+            throw new ConflictException("File stream is null");
         }
 
         if (string.IsNullOrEmpty(fileName))
         {
-            throw new ApiException("File name is empty");
+            throw new ConflictException("File name is empty");
         }
 
         try
@@ -77,7 +77,7 @@ public class CloudinaryService : IFileStorageService
             if (uploadResult.Error != null)
             {
                 _logger.LogError("Cloudinary upload error: {error}", uploadResult.Error.Message);
-                throw new ApiException($"Cloudinary upload failed: {uploadResult.Error.Message}");
+                throw new ConflictException($"Cloudinary upload failed: {uploadResult.Error.Message}");
             }
 
             _logger.LogInformation("File uploaded successfully: {url}", uploadResult.SecureUrl);
@@ -86,7 +86,7 @@ public class CloudinaryService : IFileStorageService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error uploading file {fileName}", fileName);
-            throw new ApiException($"File upload failed: {ex.Message}");
+            throw new ConflictException($"File upload failed: {ex.Message}");
         }
     }
 
@@ -113,7 +113,7 @@ public class CloudinaryService : IFileStorageService
             if (result.Error != null)
             {
                 _logger.LogError("Cloudinary delete error: {error}", result.Error.Message);
-                throw new ApiException($"Cloudinary delete failed: {result.Error.Message}");
+                throw new ConflictException($"Cloudinary delete failed: {result.Error.Message}");
             }
 
             _logger.LogInformation("File deleted successfully");
@@ -121,7 +121,7 @@ public class CloudinaryService : IFileStorageService
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting file {fileUrl}", fileUrl);
-            throw new ApiException($"File deletion failed: {ex.Message}");
+            throw new ConflictException($"File deletion failed: {ex.Message}");
         }
     }
 }
