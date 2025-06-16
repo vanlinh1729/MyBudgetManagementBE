@@ -34,7 +34,6 @@
       <Folder Include="DTOs\Transactions\" />
       <Folder Include="DTOs\UserBalances\" />
       <Folder Include="DTOs\Users\" />
-      <Folder Include="Features\DebtAndLoans\Dtos\" />
       <Folder Include="Features\Users\Commands\CreateRole\" />
       <Folder Include="Features\Users\Dtos\" />
       <Folder Include="Features\Users\Queries\" />

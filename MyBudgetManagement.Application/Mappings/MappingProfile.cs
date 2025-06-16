@@ -1,6 +1,10 @@
 using AutoMapper;
 using MyBudgetManagement.Application.DTOs;
+using MyBudgetManagement.Application.Features.Categories.Dtos;
+using MyBudgetManagement.Application.Features.Transactions.Dtos;
 using MyBudgetManagement.Domain.Entities;
+using MyBudgetManagement.Domain.Entities.Categories;
+using MyBudgetManagement.Domain.Entities.Transactions;
 using MyBudgetManagement.Domain.Entities.Users;
 
 namespace MyBudgetManagement.Application.Mappings;
@@ -26,6 +30,10 @@ public class MappingProfile : Profile
         //
         // CreateMap<UserRole, UserRoleDto>();    
         CreateMap<UserBalance, UserBalanceDto>();
+        CreateMap<Category, CategoryDto>();
+        CreateMap<Transaction, TransactionDto>()
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.CategoryType, opt => opt.MapFrom(src => src.Category.Type));
         
     }
 }
