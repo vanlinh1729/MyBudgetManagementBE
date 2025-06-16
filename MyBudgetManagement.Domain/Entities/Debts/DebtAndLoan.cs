@@ -1,10 +1,11 @@
 using MyBudgetManagement.Domain.Common;
 using MyBudgetManagement.Domain.Entities.Categories;
+using MyBudgetManagement.Domain.Entities.Transactions;
 using MyBudgetManagement.Domain.Enums;
 
 namespace MyBudgetManagement.Domain.Entities.Debts;
 
-public class DebtAndLoan : BaseEntity
+public class DebtAndLoan : AuditableBaseEntity
 {
     public Guid DebtContactId { get; set; }
     public Guid CategoryId { get; set; }
@@ -18,6 +19,8 @@ public class DebtAndLoan : BaseEntity
     public string Note { get; set; }   
     //nav props
     public virtual Category Category { get; set; }
+    
+    public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
     public virtual DebtAndLoanContact DebtAndLoanContact { get; set; }
     
 }

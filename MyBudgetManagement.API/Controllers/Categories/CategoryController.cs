@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MyBudgetManagement.Application.Features.Categories.Commands.CreateCategory;
 
 namespace MyBudgetManagement.API.Controllers.Categories;
 
@@ -14,6 +15,12 @@ public class CategoryController : ControllerBase
     public CategoryController(ISender mediator)
     {
         _mediator = mediator;
+    }
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateCategoryCommand command)
+    {
+        var id = await _mediator.Send(command);
+        return Ok(new { id });
     }
     
 }

@@ -92,6 +92,10 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
     // Transaction configuration
     modelBuilder.Entity<Transaction>(entity =>
     {
+        entity.HasOne(t => t.DebtAndLoan)
+            .WithMany(d => d.Transactions)
+            .HasForeignKey(t => t.DebtAndLoanId)
+            .OnDelete(DeleteBehavior.Restrict);
         entity.HasOne(t => t.UserBalance)
             .WithMany(ub => ub.Transactions)
             .HasForeignKey(t => t.UserBalanceId)
@@ -289,6 +293,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
             .WithMany(c => c.DebtAndLoans)
             .HasForeignKey(dl => dl.CategoryId)
             .OnDelete(DeleteBehavior.NoAction);
+        
     });
     // Permission configurations
     modelBuilder.Entity<Permission>(entity =>

@@ -1,9 +1,8 @@
+using System.ComponentModel.DataAnnotations;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using MyBudgetManagement.Application.Common.Exceptions;
 using MyBudgetManagement.Application.Common.Interfaces;
 using MyBudgetManagement.Application.Interfaces;
-using MyBudgetManagement.Domain.Entities;
 using MyBudgetManagement.Domain.Entities.Transactions;
 using MyBudgetManagement.Domain.Enums;
 
@@ -11,12 +10,12 @@ namespace MyBudgetManagement.Application.Features.Transactions.Commands.CreateTr
 
 public class CreateTransactionCommandHandler : IRequestHandler<CreateTransactionCommand, Guid>
 {
-    private readonly IApplicationDbContext _context;
+    private readonly IUnitOfWork _uow;
     private readonly ICurrentUserService _currentUser;
 
-    public CreateTransactionCommandHandler(IApplicationDbContext context, ICurrentUserService currentUser)
+    public CreateTransactionCommandHandler(IUnitOfWork uow, ICurrentUserService currentUser)
     {
-        _context = context;
+        _uow = uow;
         _currentUser = currentUser;
     }
 
@@ -24,34 +23,76 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
     {
         var userId = _currentUser.UserId;
 
-        var category = await _context.Categories
-            .FirstOrDefaultAsync(c => c.Id == request.CategoryId && c.UserId == userId, cancellationToken);
+        var category = await _uow.Categories.GetByIdAsync(request.CategoryId);
+        if (category == null || category.UserId != userId)
+            throw new NotFoundException("Không tìm thấy danh mục.");
 
-        if (category == null)
-            throw new NotFoundException("Category not found for this user.");
+        if (request.Amount <= 0)
+            throw new ValidationException("Số tiền phải lớn hơn 0.");
+
+        var userBalance = await _uow.UserBalances.GetUserBalanceByUserIdAsync(userId);
+        if (userBalance == null)
+            throw new NotFoundException("Không tìm thấy số dư người dùng.");
+
+        Guid? debtAndLoanId = null;
+
+        // Nếu là loại nợ/cho vay
+        if (category.Type == CategoryType.DebtAndLoan)
+        {
+            if (!request.DebtAndLoanId.HasValue)
+                throw new ValidationException("Phải cung cấp DebtAndLoanId cho giao dịch liên quan đến nợ.");
+
+            var debt = await _uow.DebtAndLoans.GetByIdAsync(request.DebtAndLoanId.Value);
+            if (debt == null)
+                throw new NotFoundException("Không tìm thấy khoản nợ hoặc cho vay.");
+
+            if (debt.AmountPaid + request.Amount > debt.Amount)
+                throw new ValidationException("Số tiền trả/thu vượt quá khoản nợ.");
+
+            debt.AmountPaid += request.Amount;
+            if (debt.AmountPaid >= debt.Amount)
+                debt.Status = PaymentStatus.Paid;
+
+            // Cập nhật số dư dựa trên IsDebt
+            if (debt.IsDebt)
+                userBalance.Balance -= request.Amount; // Trả nợ
+            else
+                userBalance.Balance += request.Amount; // Thu nợ
+
+            debtAndLoanId = debt.Id;
+        }
+        else
+        {
+            // Các loại transaction bình thường
+            switch (category.Type)
+            {
+                case CategoryType.Income:
+                    userBalance.Balance += request.Amount;
+                    break;
+                case CategoryType.Expense:
+                    userBalance.Balance -= request.Amount;
+                    break;
+                default:
+                    throw new InvalidOperationException("Loại danh mục không hợp lệ.");
+            }
+        }
 
         var transaction = new Transaction
         {
+            Id = Guid.NewGuid(),
             CategoryId = request.CategoryId,
+            UserBalanceId = userBalance.Id,
             Amount = request.Amount,
             Date = request.Date,
             Note = request.Note ?? string.Empty,
             Image = request.Image,
+            Created = DateTime.UtcNow,
             CreatedBy = userId,
-            Created = DateTime.UtcNow
+            DebtAndLoanId = debtAndLoanId
         };
 
-        _context.Transactions.Add(transaction);
-
-        var userBalance = await _context.UserBalances
-            .FirstOrDefaultAsync(b => b.UserId == userId, cancellationToken);
-
-        if (userBalance != null)
-        {
-            userBalance.Balance += request.Amount * (category.Type == Domain.Enums.CategoryType.Income ? 1 : -1);
-        }
-
-        await _context.SaveChangesAsync(cancellationToken);
+        await _uow.Transactions.AddAsync(transaction);
+        await _uow.SaveChangesAsync(cancellationToken);
 
         return transaction.Id;
     }

@@ -19,8 +19,7 @@ public class UserBalanceRepositoryAsync : GenericRepositoryAsync<UserBalance>, I
 
     public async Task<UserBalance> GetUserBalanceByUserIdAsync(Guid userId)
     {
-        return await _dbContext.UserBalances
-            .AsNoTracking()
+        return await _dbSet
             .FirstOrDefaultAsync(x => x.UserId == userId);
     }
 

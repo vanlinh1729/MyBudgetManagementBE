@@ -6,7 +6,7 @@ using MyBudgetManagement.Domain.Enums;
 
 namespace MyBudgetManagement.Domain.Entities.Categories;
 
-public class Category : BaseEntity
+public class Category : AuditableBaseEntity 
 {
     public Guid UserId { get; set; }
     public string Name { get; set; }
@@ -14,8 +14,8 @@ public class Category : BaseEntity
     public CategoryType Type { get; set; }
     public string? Icon { get; set; }
     public CategoryLevel? Level { get; set; }
-    public Period? Period { get; set; }
-    
+    public  Period?  Period { get; set; }
+    public bool IsDefault { get; set; }
     //nav props
     public virtual User User { get; set; }
     public virtual ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
