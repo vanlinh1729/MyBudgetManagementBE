@@ -4,6 +4,8 @@ namespace MyBudgetManagement.Domain.Interfaces.Repositories;
 
 public interface ITransactionRepositoryAsync : IGenericRepositoryAsync<Transaction>
 {
+    void RemoveRange(IEnumerable<Transaction> transactions);
+
     Task UpdateTransactionsCategoryToNullAsync(Guid categoryId);
     Task DeleteTransactionAsync(Guid transactionId);
     Task<IReadOnlyList<Transaction>> GetTransactionsByCategoryId(Guid catId);

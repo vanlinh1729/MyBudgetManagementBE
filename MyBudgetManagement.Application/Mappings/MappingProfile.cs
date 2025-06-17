@@ -1,9 +1,11 @@
 using AutoMapper;
 using MyBudgetManagement.Application.DTOs;
 using MyBudgetManagement.Application.Features.Categories.Dtos;
+using MyBudgetManagement.Application.Features.DebtAndLoans.Dtos;
 using MyBudgetManagement.Application.Features.Transactions.Dtos;
 using MyBudgetManagement.Domain.Entities;
 using MyBudgetManagement.Domain.Entities.Categories;
+using MyBudgetManagement.Domain.Entities.Debts;
 using MyBudgetManagement.Domain.Entities.Transactions;
 using MyBudgetManagement.Domain.Entities.Users;
 
@@ -34,6 +36,11 @@ public class MappingProfile : Profile
         CreateMap<Transaction, TransactionDto>()
             .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
             .ForMember(dest => dest.CategoryType, opt => opt.MapFrom(src => src.Category.Type));
-        
+        CreateMap<DebtAndLoan, DebtAndLoanDto>()
+            .ForMember(dest => dest.ContactName, opt => opt.MapFrom(src => src.DebtAndLoanContact.Name))
+            .ForMember(dest => dest.CategoryName, opt => opt.MapFrom(src => src.Category.Name))
+            .ForMember(dest => dest.CategoryIcon, opt => opt.MapFrom(src => src.Category.Icon))
+            .ForMember(dest => dest.TransactionCount, opt => opt.MapFrom(src => src.Transactions.Count));
+
     }
 }

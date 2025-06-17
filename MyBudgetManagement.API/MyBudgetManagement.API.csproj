@@ -20,7 +20,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\DebtAndLoans\" />
       <Folder Include="Logs\" />
       <Folder Include="Middlewares\" />
     </ItemGroup>

@@ -16,6 +16,12 @@ public class TransactionRepositoryAsync : GenericRepositoryAsync<Transaction>, I
     {
         _dbContext = dbContext;
     }
+
+    public void RemoveRange(IEnumerable<Transaction> transactions)
+    {
+        _context.Transactions.RemoveRange(transactions);
+    }
+
     public async Task UpdateTransactionsCategoryToNullAsync(Guid categoryId)
     {
         var transactions = await _dbContext.Transactions
