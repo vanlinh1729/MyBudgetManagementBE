@@ -29,7 +29,7 @@ public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryComman
             x.Type == request.Type);
 
         if (isExist)
-            throw new ValidationException("Tên danh mục đã tồn tại trong loại này.");
+            throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Tên danh mục đã tồn tại trong loại này.");
 
         var category = new Category
         {

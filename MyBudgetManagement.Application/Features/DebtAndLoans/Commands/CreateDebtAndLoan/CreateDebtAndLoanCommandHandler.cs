@@ -29,7 +29,7 @@ public class CreateDebtAndLoanCommandHandler : IRequestHandler<CreateDebtAndLoan
             throw new NotFoundException("Danh mục không hợp lệ.");
 
         if (request.Amount <= 0)
-            throw new ValidationException("Số tiền phải lớn hơn 0.");
+            throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Số tiền phải lớn hơn 0.");
 
         var userBalance = await _uow.UserBalances.GetUserBalanceByUserIdAsync(userId);
         if (userBalance == null)

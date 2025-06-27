@@ -47,6 +47,11 @@ public class CloudinaryService : IFileStorageService
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
     {
+        return await UploadFileAsync(fileStream, fileName, "uploads", 800, 600, "fill");
+    }
+
+    public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder = "uploads", int? width = null, int? height = null, string crop = "fill")
+    {
         if (fileStream == null)
         {
             throw new ConflictException("File stream is null");
@@ -59,18 +64,38 @@ public class CloudinaryService : IFileStorageService
 
         try
         {
-            _logger.LogInformation("Attempting to upload file: {fileName}", fileName);
+            _logger.LogInformation("Attempting to upload file: {fileName} to folder: {folder}", fileName, folder);
 
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(fileName, fileStream),
-                Folder = "avatars",
-                Transformation = new Transformation()
-                    .Width(500)
-                    .Height(500)
-                    .Crop("fill")
-                    .Gravity("face")
+                Folder = folder,
+                UseFilename = false,
+                UniqueFilename = true,
+                Overwrite = false
             };
+
+            // Add transformation if width and height are specified
+            if (width.HasValue && height.HasValue)
+            {
+                uploadParams.Transformation = new Transformation()
+                    .Width(width.Value)
+                    .Height(height.Value)
+                    .Crop(crop)
+                    .Quality("auto")
+                    .FetchFormat("auto");
+            }
+            else if (width.HasValue || height.HasValue)
+            {
+                var transformation = new Transformation().Quality("auto").FetchFormat("auto");
+                
+                if (width.HasValue)
+                    transformation = transformation.Width(width.Value);
+                if (height.HasValue)
+                    transformation = transformation.Height(height.Value);
+                    
+                uploadParams.Transformation = transformation.Crop(crop);
+            }
 
             var uploadResult = await _cloudinary.UploadAsync(uploadParams);
             
@@ -102,11 +127,9 @@ public class CloudinaryService : IFileStorageService
         {
             _logger.LogInformation("Attempting to delete file: {fileUrl}", fileUrl);
 
-            var uri = new Uri(fileUrl);
-            var pathSegments = uri.Segments;
-            var fileName = pathSegments[pathSegments.Length - 1];
-            var publicId = $"avatars/{Path.GetFileNameWithoutExtension(fileName)}";
-
+            // Extract public_id from URL
+            var publicId = ExtractPublicIdFromUrl(fileUrl);
+            
             var deleteParams = new DeletionParams(publicId);
             var result = await _cloudinary.DestroyAsync(deleteParams);
 
@@ -116,12 +139,45 @@ public class CloudinaryService : IFileStorageService
                 throw new ConflictException($"Cloudinary delete failed: {result.Error.Message}");
             }
 
-            _logger.LogInformation("File deleted successfully");
+            _logger.LogInformation("File deleted successfully. PublicId: {publicId}", publicId);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error deleting file {fileUrl}", fileUrl);
             throw new ConflictException($"File deletion failed: {ex.Message}");
+        }
+    }
+
+    private string ExtractPublicIdFromUrl(string url)
+    {
+        try
+        {
+            var uri = new Uri(url);
+            var path = uri.AbsolutePath;
+            
+            // Remove the version number if present (v1234567890)
+            var segments = path.Split('/');
+            var relevantSegments = segments.Skip(segments.Length >= 3 && segments[segments.Length - 3].StartsWith("v") ? 1 : 0);
+            
+            var pathWithoutVersion = string.Join("/", relevantSegments);
+            
+            // Remove file extension
+            var lastDotIndex = pathWithoutVersion.LastIndexOf('.');
+            if (lastDotIndex > 0)
+            {
+                pathWithoutVersion = pathWithoutVersion.Substring(0, lastDotIndex);
+            }
+            
+            // Remove leading slash
+            return pathWithoutVersion.TrimStart('/');
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error extracting public ID from URL: {url}", url);
+            // Fallback method
+            var segments = url.Split('/');
+            var fileName = segments[segments.Length - 1];
+            return $"uploads/{Path.GetFileNameWithoutExtension(fileName)}";
         }
     }
 }

@@ -20,20 +20,27 @@ public class LocalFileStorageService : IFileStorageService
 
     public async Task<string> UploadFileAsync(Stream fileStream, string fileName)
     {
-        var filePath = Path.Combine(_uploadDirectory, fileName);
-        var directoryPath = Path.GetDirectoryName(filePath);
-        
-        if (!Directory.Exists(directoryPath))
+        return await UploadFileAsync(fileStream, fileName, "uploads");
+    }
+
+    public async Task<string> UploadFileAsync(Stream fileStream, string fileName, string folder = "uploads", int? width = null, int? height = null, string crop = "fill")
+    {
+        // Create folder path
+        var folderPath = Path.Combine(_uploadDirectory, folder);
+        if (!Directory.Exists(folderPath))
         {
-            Directory.CreateDirectory(directoryPath!);
+            Directory.CreateDirectory(folderPath);
         }
+
+        var filePath = Path.Combine(folderPath, fileName);
 
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
             await fileStream.CopyToAsync(stream);
         }
 
-        return fileName;
+        // Return relative path for local storage
+        return Path.Combine(folder, fileName).Replace('\\', '/');
     }
 
     public Task DeleteFileAsync(string fileName)

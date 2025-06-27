@@ -28,7 +28,7 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
             throw new NotFoundException("Không tìm thấy danh mục.");
 
         if (request.Amount <= 0)
-            throw new ValidationException("Số tiền phải lớn hơn 0.");
+            throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Số tiền phải lớn hơn 0.");
 
         var userBalance = await _uow.UserBalances.GetUserBalanceByUserIdAsync(userId);
         if (userBalance == null)
@@ -40,14 +40,14 @@ public class CreateTransactionCommandHandler : IRequestHandler<CreateTransaction
         if (category.Type == CategoryType.DebtAndLoan)
         {
             if (!request.DebtAndLoanId.HasValue)
-                throw new ValidationException("Phải cung cấp DebtAndLoanId cho giao dịch liên quan đến nợ.");
+                                    throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Phải cung cấp DebtAndLoanId cho giao dịch liên quan đến nợ.");
 
             var debt = await _uow.DebtAndLoans.GetByIdAsync(request.DebtAndLoanId.Value);
             if (debt == null)
                 throw new NotFoundException("Không tìm thấy khoản nợ hoặc cho vay.");
 
             if (debt.AmountPaid + request.Amount > debt.Amount)
-                throw new ValidationException("Số tiền trả/thu vượt quá khoản nợ.");
+                                    throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Số tiền trả/thu vượt quá khoản nợ.");
 
             debt.AmountPaid += request.Amount;
             if (debt.AmountPaid >= debt.Amount)

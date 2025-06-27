@@ -32,7 +32,7 @@ public class UpdateDebtAndLoanCommandHandler : IRequestHandler<UpdateDebtAndLoan
                        ?? throw new NotFoundException("Danh mục không tồn tại.");
 
         if (category.Type != CategoryType.DebtAndLoan || category.UserId != userId)
-            throw new ValidationException("Danh mục không hợp lệ.");
+            throw new MyBudgetManagement.Application.Common.Exceptions.ValidationException("Danh mục không hợp lệ.");
 
         var userBalance = await _uow.UserBalances.GetUserBalanceByUserIdAsync(userId)
                           ?? throw new NotFoundException("Không tìm thấy số dư.");

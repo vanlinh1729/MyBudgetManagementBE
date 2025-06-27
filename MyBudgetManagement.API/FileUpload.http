@@ -1,0 +1,107 @@
+### File Upload API Tests
+
+# Replace {{token}} with your actual JWT token
+@token = YOUR_JWT_TOKEN_HERE
+@baseUrl = https://localhost:7017
+
+### 1. Get upload information (no auth required)
+GET {{baseUrl}}/api/file/upload-info
+Content-Type: application/json
+
+### 2. Upload single file
+POST {{baseUrl}}/api/file/upload?folder=uploads&width=800&height=600&crop=fill
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="test-image.jpg"
+Content-Type: image/jpeg
+
+< ./test-image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 3. Upload avatar (predefined settings)
+POST {{baseUrl}}/api/file/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ./avatar.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 4. Upload multiple files
+POST {{baseUrl}}/api/file/upload-multiple?folder=gallery&width=1200&height=800
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="files"; filename="image1.jpg"
+Content-Type: image/jpeg
+
+< ./image1.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="files"; filename="image2.png"
+Content-Type: image/png
+
+< ./image2.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 5. Delete file
+DELETE {{baseUrl}}/api/file/delete?fileUrl=https://res.cloudinary.com/dmmcxdpmp/image/upload/v1234567890/uploads/filename.jpg
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### 6. Upload with different transformation options
+
+# Crop to fill
+POST {{baseUrl}}/api/file/upload?folder=products&width=500&height=500&crop=fill
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="product.jpg"
+Content-Type: image/jpeg
+
+< ./product.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Fit within dimensions
+POST {{baseUrl}}/api/file/upload?folder=thumbnails&width=300&height=200&crop=fit
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="thumbnail.jpg"
+Content-Type: image/jpeg
+
+< ./thumbnail.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 7. Upload to different folders
+
+# Upload to documents folder
+POST {{baseUrl}}/api/file/upload?folder=documents
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="document.pdf"
+Content-Type: application/pdf
+
+< ./document.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Upload to user-specific folder
+POST {{baseUrl}}/api/file/upload?folder=users/123/photos
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="user-photo.jpg"
+Content-Type: image/jpeg
+
+< ./user-photo.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW-- 
