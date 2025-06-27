@@ -47,6 +47,7 @@ public class AuthController : ControllerBase
         return Ok("Đã gửi lại email kích hoạt tài khoản, vui lòng kiểm tra lại hộp thư.");
     }
     
+    [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(LoginCommand command)
     {

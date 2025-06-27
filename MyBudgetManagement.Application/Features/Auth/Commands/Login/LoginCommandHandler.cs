@@ -41,7 +41,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponse>
         // 3. Check account status
         if (user.Status == AccountStatus.Pending)
         {
-            throw new UnauthorizedException("Tài khoản chưa được kích hoạt");
+            throw new AccountNotActivated("Tài khoản chưa được kích hoạt");
         }
 
         // 4. Get user roles
