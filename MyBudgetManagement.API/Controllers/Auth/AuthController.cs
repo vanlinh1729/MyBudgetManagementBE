@@ -8,6 +8,8 @@ using MyBudgetManagement.Application.Features.Auth.Commands.ActivateAccount;
 using MyBudgetManagement.Application.Features.Auth.Commands.Login;
 using MyBudgetManagement.Application.Features.Auth.Commands.RegisterUser;
 using MyBudgetManagement.Application.Features.Auth.Commands.ResendActivationEmail;
+using MyBudgetManagement.Application.Features.Auth.Commands.RefreshToken;
+using MyBudgetManagement.Application.Features.Auth.Commands.Logout;
 using MyBudgetManagement.Application.Features.Auth.Dtos;
 using MyBudgetManagement.Application.Features.Auth.Interfaces;
 using MyBudgetManagement.Application.Interfaces;
@@ -53,6 +55,22 @@ public class AuthController : ControllerBase
     {
         var authResponse = await _mediator.Send(command);
         return Ok(authResponse);
+    }
+
+    [AllowAnonymous]
+    [HttpPost("refresh-token")]
+    public async Task<IActionResult> RefreshToken(RefreshTokenCommand command)
+    {
+        var authResponse = await _mediator.Send(command);
+        return Ok(authResponse);
+    }
+
+    [HttpPost("logout")]
+    [Authorize]
+    public async Task<IActionResult> Logout(LogoutCommand command)
+    {
+        await _mediator.Send(command);
+        return Ok(new { message = "Đăng xuất thành công" });
     }
 
 }

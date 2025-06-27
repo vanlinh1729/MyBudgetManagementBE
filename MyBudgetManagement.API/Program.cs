@@ -106,6 +106,10 @@ try
     }
 
     app.UseCors("AllowAllOrigins"); // Áp dụng CORS policy
+    
+    // Add Global Exception Handling
+    app.UseMiddleware<MyBudgetManagement.API.Middlewares.GlobalExceptionMiddleware>();
+    
     app.UseAuthentication();
     app.UseAuthorization();
     app.UseHttpsRedirection();
