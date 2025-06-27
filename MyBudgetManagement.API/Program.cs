@@ -9,6 +9,9 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Formatting.Json;
 using Serilog.Sinks.File;
+using FluentValidation.AspNetCore;
+using FluentValidation;
+using MyBudgetManagement.Application.Features.Auth.Commands.Login;
 
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
@@ -27,6 +30,14 @@ try
         {
             options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         });
+    
+    // Add FluentValidation
+    builder.Services.AddFluentValidationAutoValidation()
+                    .AddFluentValidationClientsideAdapters();
+    
+    // Register validators from Application assembly
+    builder.Services.AddValidatorsFromAssemblyContaining<LoginCommand>();
+    
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen(options =>
     {
