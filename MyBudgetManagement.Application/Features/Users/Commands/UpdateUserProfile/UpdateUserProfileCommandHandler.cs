@@ -35,6 +35,13 @@ public class UpdateUserProfileCommandHandler : IRequestHandler<UpdateUserProfile
         user.DateOfBirth = request.DateOfBirth;
         user.PhoneNumber = request.PhoneNumber;
         user.Currency = request.Currency;
+        
+        // Update avatar if provided
+        if (!string.IsNullOrEmpty(request.Avatar))
+        {
+            user.Avatar = request.Avatar;
+        }
+        
         user.UpdatedAt = DateTime.UtcNow;
 
         // Update user

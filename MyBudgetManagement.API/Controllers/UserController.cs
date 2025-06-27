@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using MyBudgetManagement.Application.Features.Users.Commands.ChangePassword;
 using MyBudgetManagement.Application.Features.Users.Commands.DeleteAccount;
 using MyBudgetManagement.Application.Features.Users.Commands.UpdateUserProfile;
+using MyBudgetManagement.Application.Features.Users.Commands.UploadAvatar;
 using MyBudgetManagement.Application.Features.Users.Dtos;
 using MyBudgetManagement.Application.Features.Users.Queries.GetUserProfile;
 
@@ -91,6 +92,26 @@ public class UserController : ControllerBase
         
         await _mediator.Send(command);
         return Ok(new { message = "Đổi mật khẩu thành công" });
+    }
+    
+    /// <summary>
+    /// Upload and update user avatar
+    /// </summary>
+    [HttpPost("upload-avatar")]
+    public async Task<IActionResult> UploadAvatar(IFormFile file)
+    {
+        var userId = GetCurrentUserId();
+        var command = new UploadAvatarCommand
+        {
+            UserId = userId,
+            File = file
+        };
+        
+        var result = await _mediator.Send(command);
+        return Ok(new { 
+            message = "Avatar đã được cập nhật thành công",
+            data = result
+        });
     }
     
     /// <summary>

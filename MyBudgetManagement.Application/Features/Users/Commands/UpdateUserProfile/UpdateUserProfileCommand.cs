@@ -12,4 +12,5 @@ public class UpdateUserProfileCommand : IRequest<UserProfileDto>
     public DateTime DateOfBirth { get; set; }
     public string? PhoneNumber { get; set; }
     public Currencies Currency { get; set; }
+    public string? Avatar { get; set; }
 } 

@@ -1,0 +1,106 @@
+### Avatar Upload API Tests
+
+# Replace {{token}} with your actual JWT token
+@token = YOUR_JWT_TOKEN_HERE
+@baseUrl = https://localhost:7017
+
+### 1. Upload avatar and update user profile automatically (Recommended)
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.jpg"
+Content-Type: image/jpeg
+
+< ./avatar.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 2. Upload avatar file only (without updating user profile)
+POST {{baseUrl}}/api/file/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.png"
+Content-Type: image/png
+
+< ./avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 3. Get user profile to verify avatar update
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{token}}
+
+### 4. Update user profile with new avatar URL (manual method)
+PUT {{baseUrl}}/api/users/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullName": "Nguyen Van Linh",
+  "gender": 1,
+  "dateOfBirth": "1990-01-01T00:00:00Z",
+  "phoneNumber": "+84123456789",
+  "currency": 1,
+  "avatar": "https://res.cloudinary.com/your-cloud-name/image/upload/v123456789/avatars/avatar_12345.jpg"
+}
+
+### 5. Test with different image formats
+
+# Upload PNG avatar
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.png"
+Content-Type: image/png
+
+< ./avatar.png
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Upload WebP avatar
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="avatar.webp"
+Content-Type: image/webp
+
+< ./avatar.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### 6. Test error cases
+
+# Test with too large file (should fail with > 2MB)
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="large-image.jpg"
+Content-Type: image/jpeg
+
+< ./large-image.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Test with non-image file (should fail)
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="document.pdf"
+Content-Type: application/pdf
+
+< ./document.pdf
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+# Test without file (should fail)
+POST {{baseUrl}}/api/users/upload-avatar
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{} 

@@ -150,14 +150,15 @@ public class FileController : ControllerBase
     }
 
     /// <summary>
-    /// Upload avatar with predefined settings
+    /// Upload avatar file only (without updating user profile)
+    /// For uploading and updating user profile, use /api/users/upload-avatar instead
     /// </summary>
     /// <param name="file">The avatar file to upload</param>
     /// <returns>Avatar upload information</returns>
     [HttpPost("upload-avatar")]
     [ProducesResponseType(typeof(ApiResponse<FileUploadDto>), 200)]
     [ProducesResponseType(typeof(ApiResponse<string>), 400)]
-    public async Task<ActionResult<ApiResponse<FileUploadDto>>> UploadAvatar(IFormFile file)
+    public async Task<ActionResult<ApiResponse<FileUploadDto>>> UploadAvatarFileOnly(IFormFile file)
     {
         try
         {
@@ -171,11 +172,14 @@ public class FileController : ControllerBase
             };
 
             var result = await _mediator.Send(command);
-            return Ok(new ApiResponse<FileUploadDto> { Data = result, Message = "Avatar uploaded successfully" });
+            return Ok(new ApiResponse<FileUploadDto> { 
+                Data = result, 
+                Message = "Avatar file uploaded successfully. Use /api/users/upload-avatar to upload and update user profile automatically." 
+            });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error uploading avatar");
+            _logger.LogError(ex, "Error uploading avatar file");
             return BadRequest(new ApiResponse<string> { Message = ex.Message });
         }
     }
